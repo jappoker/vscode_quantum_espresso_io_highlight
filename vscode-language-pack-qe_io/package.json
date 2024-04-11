@@ -1,0 +1,40 @@
+{
+  "name": "vscode-language-pack-qe_io",
+  "displayName": "QE Language Pack",
+  "description": "Language pack extension for QE",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.88.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "qe_io",
+        "extensions": [
+          ".qe"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "qe_io",
+        "scopeName": "source.qe",
+        "path": "./QE.tmLanguage"
+      }
+    ],
+    "themes": [
+      {
+        "label": "My Custom QE Theme",
+        "uiTheme": "vs-dark",
+        "path": "./theme.json"
+      }
+    ]
+  },
+  "scripts": {
+    "update": "cd ../vscode && npm run update-localization-extension qe_io"
+  }
+}

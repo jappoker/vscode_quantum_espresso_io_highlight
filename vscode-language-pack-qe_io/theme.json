@@ -1,0 +1,18 @@
+{
+    "name": "QE theme",
+    "colors": {},
+    "tokenColors": [
+        {
+            "scope": "variable.assignment.qe",
+            "settings": {
+                "foreground": "#FF0000"
+            }
+        },
+        {
+            "scope": "keyword.operator.equals.qe",
+            "settings": {
+                "foreground": "#FF0000"
+            }
+        }
+    ]
+}

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>name</key>
+    <string>QE</string>
+    <key>scopeName</key>
+    <string>source.qe</string>
+    <key>fileTypes</key>
+    <array>
+        <string>in</string>
+    </array>
+    <key>patterns</key>
+    <array>
+        <dict>
+            <key>match</key>
+            <!-- Matches words before the equals sign -->
+            <string>[\w()_.,-]+(?=\s*=)</string>
+            <key>name</key>
+            <string>variable.assignment.qe</string>
+        </dict>
+        <dict>
+            <key>match</key>
+            <!-- Matches the equals sign -->
+            <string>=</string>
+            <key>name</key>
+            <string>keyword.operator.assignment.qe</string>
+        </dict>
+        <dict>
+            <key>match</key>
+            <string>\b(CONTROL|SYSTEM|ELECTRONS|ATOMIC_SPECIES|CELL_PARAMETERS|K_POINTS|HUBBARD|ATOMIC_POSITIONS)\b</string>
+            <key>name</key>
+            <string>constant.language</string>
+        </dict>
+
+        <dict>
+            <key>match</key>
+            <string>\b(H|He|Li|Be|B|C|N|O|F|Ne|Na|Mg|Al|Si|P|S|Cl|Ar|K|Ca|Sc|Ti|V|Cr|Mn|Fe|Co|Ni|Cu|Zn|Ga|Ge|As|Se|Br|Kr|Rb|Sr|Y|Zr|Nb|Mo|Tc|Ru|Rh|Pd|Ag|Cd|In|Sn|Sb|Te|I|Xe|Cs|Ba|La|Ce|Pr|Nd|Pm|Sm|Eu|Gd|Tb|Dy|Ho|Er|Tm|Yb|Lu|Hf|Ta|W|Re|Os|Ir|Pt|Au|Hg|Tl|Pb|Bi|Po|At|Rn|Fr|Ra|Ac|Th|Pa|U|Np|Pu|Am|Cm|Bk|Cf|Es|Fm|Md|No|Lr|Rf|Db|Sg|Bh|Hs|Mt|Ds|Rg|Cn|Nh|Fl|Mc|Lv|Ts|Og)\b</string>
+            <key>name</key>
+            <string>variable.other.constant.qe</string>
+        </dict>
+
+
+        <dict>
+            <key>begin</key>
+            <string>\(</string>
+            <key>end</key>
+            <string>\)</string>
+            <key>name</key>
+            <string>parentheses.block.custom</string>
+            <key>patterns</key>
+            <array>
+                <!-- Pattern to match the content inside parentheses -->
+                <dict>
+                    <key>match</key>
+                    <string>[\d]+</string>
+                    <key>name</key>
+                    <string>keyword.control.import.qe</string>
+                </dict>
+            </array>
+        </dict>
+
+    </array>
+</dict>
+</plist>
