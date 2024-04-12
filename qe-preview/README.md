@@ -24,7 +24,7 @@ Once the extension is installed, you can use it as follows:
 
 ## Customization
 
-You can customize the regex matching rules by modifying the JSON file located at `/src/regexPatterns.json`. The JSON file should follow this format:
+You can customize the regex matching rules by modifying the JSON file located at `/resources/regexPatterns.json`. The JSON file should follow this format:
 
 ```json
 {
@@ -47,4 +47,4 @@ Example:
 ```
 
 ## Screenshot
-![Screenshot](./screenshot.png)
+![Screenshot](https://github.com/jappoker/vscode_quantum_espresso_io_highlight/blob/main/qe-preview/screenshot.png?raw=true)
