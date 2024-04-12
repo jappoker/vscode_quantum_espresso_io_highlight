@@ -4,7 +4,7 @@ This is a Visual Studio Code extension that provides syntax highlighting for Qua
 
 ## Features
 * [Syntax highlighting](./syntaxes/qe-io.tmLanguage.json) for Quantum Espresso input files.
-*[Quantum Espresso Live Preview Extension](./qe-preview//README.md) for Quantum Espresso output files.
+* [Quantum Espresso Live Preview Extension](./qe-preview//README.md) for Quantum Espresso output files.
 
 
 ## Screenshot 
