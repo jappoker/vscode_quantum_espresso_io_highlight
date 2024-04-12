@@ -21,7 +21,12 @@
         "name": "LDA+U Parameters",
         "regex": "--- enter write_ns ---\\s*([\\s\\S]*?)\\s*--- exit write_ns ---",
         "renderType": "last",
-        "outputFormat": "{value}",
-        "options": "s"
+        "outputFormat": "{value}"
+    },
+    {
+        "name": "LDA+U Parameters (>7.1)",
+        "regex": "=================== HUBBARD OCCUPATIONS ===================\\s*([\\s\\S]*?)\\s*------ SPIN UP --------",
+        "renderType": "last",
+        "outputFormat": "{value}"
     }
 ]
