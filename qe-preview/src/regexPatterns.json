@@ -1,0 +1,27 @@
+[
+    {
+        "name": "Unit Cell Volume",
+        "regex": "\\bunit-cell volume\\s+=\\s+([\\d.]+)\\s*\\(a\\.u\\.\\)\\^3",
+        "renderType": "last",
+        "outputFormat": "{value} (a.u.)^3"
+    },
+    {
+        "name": "Total Energy",
+        "regex": "!\\s*total\\s+energy\\s+=\\s+(-?\\d+\\.\\d+)\\s+Ry",
+        "renderType": "all",
+        "outputFormat": "{value} Ry"
+    },
+    {
+        "name": "Total Stress",
+        "regex": "\\s*total\\s+stress\\s+\\(Ry\\/bohr\\*\\*3\\)\\s+\\(kbar\\)\\s+P=\\s+(-?\\d+\\.\\d+)\\s*",
+        "renderType": "last",
+        "outputFormat": "{value} kbar"
+    },
+    {
+        "name": "LDA+U Parameters",
+        "regex": "--- enter write_ns ---\\s*([\\s\\S]*?)\\s*--- exit write_ns ---",
+        "renderType": "last",
+        "outputFormat": "{value}",
+        "options": "s"
+    }
+]
