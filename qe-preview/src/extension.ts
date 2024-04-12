@@ -98,23 +98,25 @@ export function extractRelevantData(documentText: string): string {
         while ((match = regex.exec(documentText)) !== null) {
             matches.push(match[1]);
         }
+        let outputFormat = config.outputFormat.replace('{value}', '<span class="button" onclick="copyToClipboard(\'{value}\')">{value}</span>');
+        console.log(outputFormat);
 
         // Determine what to show in the second column based on matches
         let formattedResult;
         switch (config.renderType) {
             case 'first':
-                formattedResult = matches.length > 0 ? config.outputFormat.replace('{value}', matches[0]) : "No matches found.";
+                formattedResult = matches.length > 0 ? outputFormat.replace(/{value}/g, matches[0]) : "No matches found.";
                 break;
             case 'last':
-                formattedResult = matches.length > 0 ? config.outputFormat.replace('{value}', matches[matches.length - 1]) : "No matches found.";
+                formattedResult = matches.length > 0 ? outputFormat.replace(/{value}/g, matches[matches.length - 1]) : "No matches found.";
                 break;
             case 'all':
                 if (matches.length === 1) {
-                    formattedResult = config.outputFormat.replace('{value}', matches[0]);
+                    formattedResult = outputFormat.replace(/{value}/g, matches[0]);
                 } else if (matches.length > 1) {
-                    const first = config.outputFormat.replace('{value}', matches[0]);
-                    const last = config.outputFormat.replace('{value}', matches[matches.length - 1]);
-                    const collapsed = matches.slice(1, matches.length - 1).map(m => config.outputFormat.replace('{value}', m)).join('<br>');
+                    const first = outputFormat.replace(/{value}/g, matches[0]);
+                    const last = outputFormat.replace(/{value}/g, matches[matches.length - 1]);
+                    const collapsed = matches.slice(1, matches.length - 1).map(m => outputFormat.replace(/{value}/g, m)).join('<br>');
                     formattedResult = `${first} <details><summary>...</summary>${collapsed}</details>${last}`;
                 } else {
                     formattedResult = "No matches found.";
@@ -124,6 +126,8 @@ export function extractRelevantData(documentText: string): string {
                 formattedResult = "No matches found.";
                 break;
         }
+
+        console.log(formattedResult);
 
 
         formattedResult = formattedResult.replace(/\n/g, '<br>');

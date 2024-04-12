@@ -28,5 +28,11 @@
         "regex": "End of self-consistent calculation\\S*\\s+=================== HUBBARD OCCUPATIONS ===================\\s*([\\s\\S]*?)\\s*------ SPIN UP --------",
         "renderType": "last",
         "outputFormat": "{value}"
+    },
+    {
+        "name": "Job Done?",
+        "regex": "(JOB DONE\\.)",
+        "renderType": "last",
+        "outputFormat": "{value}"
     }
 ]

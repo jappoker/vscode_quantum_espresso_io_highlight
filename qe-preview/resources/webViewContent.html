@@ -6,12 +6,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Live Preview</title>
+    <script>
+        function copyToClipboard(text) {
+            // Create a temporary input element
+            var input = document.createElement('input');
+            input.setAttribute('value', text);
+            document.body.appendChild(input);
+            input.select();
+
+            // Copy the selected text to the clipboard
+            document.execCommand('copy');
+
+            // Remove the temporary input element
+            document.body.removeChild(input);
+        }
+    </script>
 </head>
 
 <style>
     /* Specify the monospaced font */
-    body {
+    span {
         font-family: 'Roboto Mono', monospace;
+    }
+
+    .button {
+        border-radius: 4px;
+        cursor: pointer;
+        min-width: 54px;
+        padding: 0 3px;
+        text-align: center;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+        white-space: pre;
+    }
+
+    .button:hover {
+        color: #b6b6b6;
+    }
+
+    .button:focus {
+        border-color: #4285f4;
+        outline: none;
     }
 </style>
 
