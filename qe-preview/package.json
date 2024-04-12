@@ -6,6 +6,7 @@
     "name": "Jingyi Zhuang",
     "email": "jz2907@columbia.edu"
   },
+  "publisher": "jappoker",
   "repository": {
     "type": "git",
     "url": "git@github.com:jappoker/vscode_quantum_espresso_io_highlight.git"

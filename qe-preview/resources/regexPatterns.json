@@ -25,7 +25,7 @@
     },
     {
         "name": "LDA+U Parameters (>7.1)",
-        "regex": "=================== HUBBARD OCCUPATIONS ===================\\s*([\\s\\S]*?)\\s*------ SPIN UP --------",
+        "regex": "End of self-consistent calculation\\S*\\s+=================== HUBBARD OCCUPATIONS ===================\\s*([\\s\\S]*?)\\s*------ SPIN UP --------",
         "renderType": "last",
         "outputFormat": "{value}"
     }
