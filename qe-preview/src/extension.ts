@@ -1,12 +1,17 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
-import { extractRelevantData } from './dataExtractor'; // Import the function
 
 let currentPanel: vscode.WebviewPanel | undefined = undefined;
+let regexConfigs: any[] = [];
+let htmlPath: string = '';
+let jsonPath: string = '';
 
 // This method is called when your extension is activated
 export function activate(context: vscode.ExtensionContext) {
+    jsonPath = context.asAbsolutePath(path.join('resources', 'regexPatterns.json'))
+    htmlPath = context.asAbsolutePath(path.join('resources', 'webViewContent.html'))
+    regexConfigs = loadRegexConfigurations();
     context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(editor => {
         if (editor) {
             updateWebViewContent(editor);
@@ -67,10 +72,81 @@ async function updateWebViewContent(editor: vscode.TextEditor) {
 }
 
 function getHtmlContent(content: string): string {
-    const htmlPath = path.join(__dirname, '../src/webViewContent.html');
     let htmlTemplate = fs.readFileSync(htmlPath, 'utf8');
     return htmlTemplate.replace('{{content}}', content);
 }
+
+interface RegexConfig {
+    name: string;
+    regex: string;
+    renderType: string;
+    outputFormat: string;
+}
+
+// Load regex configurations synchronously
+function loadRegexConfigurations(): RegexConfig[] {
+    const jsonData = fs.readFileSync(jsonPath, 'utf8');
+    return JSON.parse(jsonData);
+}
+
+export function extractRelevantData(documentText: string): string {
+    let tableRows = regexConfigs.map(config => {
+        const regex = new RegExp(config.regex, 'g');
+        const matches = [];
+        let match;
+
+        while ((match = regex.exec(documentText)) !== null) {
+            matches.push(match[1]);
+        }
+
+        // Determine what to show in the second column based on matches
+        let formattedResult;
+        switch (config.renderType) {
+            case 'first':
+                formattedResult = matches.length > 0 ? config.outputFormat.replace('{value}', matches[0]) : "No matches found.";
+                break;
+            case 'last':
+                formattedResult = matches.length > 0 ? config.outputFormat.replace('{value}', matches[matches.length - 1]) : "No matches found.";
+                break;
+            case 'all':
+                if (matches.length === 1) {
+                    formattedResult = config.outputFormat.replace('{value}', matches[0]);
+                } else if (matches.length > 1) {
+                    const first = config.outputFormat.replace('{value}', matches[0]);
+                    const last = config.outputFormat.replace('{value}', matches[matches.length - 1]);
+                    const collapsed = matches.slice(1, matches.length - 1).map(m => config.outputFormat.replace('{value}', m)).join('<br>');
+                    formattedResult = `${first} <details><summary>...</summary>${collapsed}</details>${last}`;
+                } else {
+                    formattedResult = "No matches found.";
+                }
+                break;
+            default:
+                formattedResult = "No matches found.";
+                break;
+        }
+
+
+        formattedResult = formattedResult.replace(/\n/g, '<br>');
+
+        // Return a table row with the config name and the formatted result
+        return `<tr><td>${config.name}</td><td>${formattedResult}</td></tr>`;
+    });
+
+    // Wrap rows in table tags
+    return `<table border="1" style="width:100%; border-collapse: collapse;">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Output</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${tableRows.join('')}
+                </tbody>
+            </table>`;
+}
+
+
 
 // This method is called when your extension is deactivated
 export function deactivate() {

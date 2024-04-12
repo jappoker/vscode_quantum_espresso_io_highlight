@@ -1,10 +1,14 @@
 {
   "name": "qe-preview",
-  "displayName": "qe_preview",
+  "displayName": "QE Live Preview",
   "description": "qe-preview is a VS Code extension for live previewing Quantum Espresso output (not necessary but .output) files. Extract and format data with custom regex rules, enhancing your Quantum Espresso experience.",
   "author": {
     "name": "Jingyi Zhuang",
     "email": "jz2907@columbia.edu"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:jappoker/vscode_quantum_espresso_io_highlight.git"
   },
   "version": "0.0.1",
   "engines": {
