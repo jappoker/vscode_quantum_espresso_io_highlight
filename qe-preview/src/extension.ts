@@ -150,7 +150,17 @@ export function extractRelevantData(documentText: string): string {
             </table>`;
 }
 
+function getActiveFileAndDirectory() {
+    const activeEditor = vscode.window.activeTextEditor;
+    if (!activeEditor) {
+        return; // No open text editor
+    }
 
+    const filePath = activeEditor.document.uri.fsPath;
+    const directoryPath = vscode.Uri.joinPath(activeEditor.document.uri, '..').fsPath;
+
+    return { filePath, directoryPath };
+}
 
 // This method is called when your extension is deactivated
 export function deactivate() {

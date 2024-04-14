@@ -1,5 +1,11 @@
 [
     {
+        "name": "Job Done?",
+        "regex": "(JOB DONE\\.)",
+        "renderType": "last",
+        "outputFormat": "{value}"
+    },
+    {
         "name": "Unit Cell Volume",
         "regex": "\\bunit-cell volume\\s+=\\s+([\\d.]+)\\s*\\(a\\.u\\.\\)\\^3",
         "renderType": "last",
@@ -30,8 +36,8 @@
         "outputFormat": "{value}"
     },
     {
-        "name": "Job Done?",
-        "regex": "(JOB DONE\\.)",
+        "name": "Final Cell",
+        "regex": "Begin final coordinates\\s*([\\s\\S]*?)\\s*End final coordinates",
         "renderType": "last",
         "outputFormat": "{value}"
     }
