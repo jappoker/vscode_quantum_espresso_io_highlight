@@ -6,13 +6,23 @@ This extension offers a live preview for Quantum Espresso output files with the 
 
 ## Installation
 
-### Marketplace Installation
+### Method 1: Marketplace Installation
 
 TBD
 
 
-### Manual Installation
+### Method 2: Install from GitHub Release
 
+1. Go to the [GitHub Releases](https://github.com/jappoker/vscode_quantum_espresso_io_highlight/releases) page for this extension.
+2. Download the latest release `.vsix` file from the assets.
+3. Open **Visual Studio Code**.
+4. Navigate to the **Extensions** view.
+5. Click the `...` at the top of the sidebar, and select `Install from VSIX...` from the dropdown.
+6. Locate the downloaded `.vsix` file and select it.
+7. The extension will be installed into Visual Studio Code.
+8. Reload Visual Studio Code to activate the extension.
+
+### Method 3: Manual Installation
 To install the extension, follow these steps:
 
 1. Clone or download this repository.
@@ -132,3 +142,8 @@ Example:
 }
 ```
 </del>
+
+
+## License
+
+This extension is licensed under the [MIT License](./LICENSE).
