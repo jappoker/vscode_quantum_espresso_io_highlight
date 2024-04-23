@@ -2,12 +2,13 @@
 
 Author by Jingyi Zhuang (@jappoker, [jz2907@columbia.edu](mailto:jz2907@columbia.edu))
 
-This extension provides a live preview feature for Quantum Espresso output files with the extension `.out`. It allows users to view formatted data extracted using regular expressions (regex) defined in a JSON configuration file.
+This extension offers a live preview for Quantum Espresso output files with the `.out` extension. Users can view formatted data extracted through customizable regular expressions defined on an integrated settings page.
 
 ## Installation
 
 ### Marketplace Installation
 
+TBD
 
 
 ### Manual Installation
@@ -103,7 +104,11 @@ To add a new rule, click on the `Add Pattern` button and fill in the fields with
 }
 ```
 
-### Customizing Regex Matching Rules (Old)
+### Customizing Regex Matching Rules (Outdated)
+
+**Note**: This method is outdated and will be removed in future versions. Please use the new method described above.
+
+<del>
 
 You can customize the regex matching rules by modifying the JSON file located at `/resources/regexPatterns.json`. The JSON file should follow this format:
 
@@ -126,3 +131,4 @@ Example:
     "outputFormat": "{value} (a.u.)^3"
 }
 ```
+</del>
