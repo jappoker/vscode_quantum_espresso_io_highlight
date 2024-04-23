@@ -146,4 +146,4 @@ Example:
 
 ## License
 
-This extension is licensed under the [MIT License](./LICENSE).
+This extension is licensed under the [MIT License](https://raw.githubusercontent.com/jappoker/vscode_quantum_espresso_io_highlight/main/qe-preview/LICENSE).
