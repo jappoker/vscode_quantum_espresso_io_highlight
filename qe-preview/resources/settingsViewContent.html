@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Security-Policy" content="
+    default-src 'none';
+    script-src 'vscode-resource:' 'unsafe-inline';
+    style-src 'vscode-resource:' 'unsafe-inline';
+">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Settings Editor</title>
+</head>
+
+<style>
+    .json-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .wide {
+        width: 100%;
+    }
+
+    .json-block {
+        margin-bottom: 6px;
+        padding: 12px;
+        font-family: 'Courier New', Courier, monospace;
+    }
+
+    .json-block td {
+        /* padding: 10px; */
+        padding-left: 10px;
+        vertical-align: top;
+        border: none;
+        font-family: 'Courier New', Courier, monospace;
+    }
+
+
+    .json-block input[type="text"],
+    .json-block select {
+        background-color: transparent;
+        border: 0;
+        width: 100%;
+        /* padding: 5px; */
+        font-family: 'Courier New', Courier, monospace;
+        color: #b6b6b6;
+    }
+
+    .json-block input:focus,
+    .json-block select:focus,
+    .json-block textarea:focus {
+        outline: none;
+        background-color: #b6b6b615;
+    }
+
+    .json-block textarea {
+        background-color: transparent;
+        width: 100%;
+        border: 0;
+        resize: none;
+        overflow: auto;
+        padding: 0;
+        height: 12px;
+        min-height: 12px;
+        font-family: 'Courier New', Courier, monospace;
+        color: #b6b6b6;
+    }
+
+    .json-block .name,
+    .json-block .regex,
+    .json-block .outputFormat {
+        width: 100%;
+    }
+
+    .delete {
+        padding: 5px 10px;
+        margin: 5px;
+        border: none;
+        color: white;
+        cursor: pointer;
+        float: right;
+    }
+
+    .delete {
+        background-color: #f44336;
+    }
+
+    .delete:hover {
+        opacity: 0.8;
+    }
+
+    .button {
+        padding: 5px 10px;
+        margin: 5px;
+        border: none;
+        color: white;
+        cursor: pointer;
+        text-align: center;
+        display: inline-block;
+    }
+
+    #add {
+        background-color: #4CAF50;
+    }
+
+    #save {
+        background-color: #2196F3;
+    }
+
+    #cancel {
+        background-color: #5f5f5f;
+    }
+
+    .button:hover {
+        opacity: 0.8;
+    }
+</style>
+
+<body>
+    <h1>Edit Settings</h1>
+    <table id="settingsTable" border="0" style="width:100%; border-collapse: collapse;" class="json-table">
+        {{content}}
+    </table>
+    <button id="add" class="button">Add Pattern</button>
+    <button id="save" class="button">Save Settings</button>
+    <button id="cancel" class="button">Close</button>
+
+    <script>
+        const vscode = acquireVsCodeApi();
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const table = document.getElementById('settingsTable');
+
+            // Event delegation for handling clicks on dynamically added delete buttons
+            table.addEventListener('click', function (event) {
+                if (event.target.classList.contains('delete')) {
+                    const tr = event.target.closest('tr');
+                    tr.remove(); // Remove the row from the table
+                }
+            });
+
+            const textareas = document.querySelectorAll('.json-block textarea');
+            textareas.forEach(textarea => {
+                textarea.addEventListener('input', autoResize, false);
+                autoResize.call(textarea);
+            });
+
+            function autoResize() {
+                // this.style.height = 'auto';
+                this.style.height = (this.scrollHeight) + 'px';
+            }
+
+            document.getElementById('add').addEventListener('click', addPattern);
+            document.getElementById('save').addEventListener('click', saveSettings);
+            document.getElementById('cancel').addEventListener('click', cancelSettings);
+        });
+
+
+        function addPattern() {
+            const table = document.getElementById('settingsTable');
+            table.insertAdjacentHTML('beforeend', `
+        <tr class="json-block">
+            <td>{
+                <table>
+                    <tr><td >"name": </td><td class="wide"><textarea class="name"></textarea></td></tr>
+                    <tr><td >"regex": </td><td class="wide"><textarea class="regex"></textarea></td></tr>
+                    <tr><td >"renderType": </td><td class="wide">
+                        <select class="renderType">
+                            <option value="first">First</option>
+                            <option value="last">Last</option>
+                            <option value="all">All</option>
+                        </select></td></tr>
+                    <tr><td >"outputFormat": </td><td class="wide"><input type="text" class="outputFormat" value="{value}"/></td></tr>
+                </table>
+            }</td>
+            <td>
+                <button class="delete">Delete</button>
+            </td>
+        </tr>
+    `);
+            const textareas = document.querySelectorAll('.json-block textarea');
+            textareas.forEach(textarea => {
+                textarea.addEventListener('input', autoResize, false);
+                autoResize.call(textarea);
+            });
+
+            function autoResize() {
+                // this.style.height = 'auto';
+                this.style.height = (this.scrollHeight) + 'px';
+            }
+        }
+
+        function saveSettings() {
+            const rows = document.querySelectorAll('#settingsTable tbody tr td table');
+            const settings = Array.from(rows).map(row => ({
+                name: row.querySelector('.name').value,
+                regex: row.querySelector('.regex').value,
+                renderType: row.querySelector('.renderType').value,
+                outputFormat: row.querySelector('.outputFormat').value
+            }));
+            vscode.postMessage({ command: 'save', data: settings });
+        }
+
+        function cancelSettings() {
+            vscode.postMessage({ command: 'cancel' });
+        }
+    </script>
+
+</body>
+
+</html>

@@ -1,17 +1,63 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
+import { Console } from 'console';
 
 let currentPanel: vscode.WebviewPanel | undefined = undefined;
 let regexConfigs: any[] = [];
+let defaultRegexConfigs: any[] = [];
 let htmlPath: string = '';
+let settingsHtmlPath: string = '';
 let jsonPath: string = '';
 
 // This method is called when your extension is activated
 export function activate(context: vscode.ExtensionContext) {
     jsonPath = context.asAbsolutePath(path.join('resources', 'regexPatterns.json'))
     htmlPath = context.asAbsolutePath(path.join('resources', 'webViewContent.html'))
-    regexConfigs = loadRegexConfigurations();
+    settingsHtmlPath = context.asAbsolutePath(path.join('resources', 'settingsViewContent.html'))
+
+    defaultRegexConfigs = loadRegexConfigurations(); // Load regex configurations from JSON file
+    regexConfigs = getPatternSettings(); // Load regex configurations from settings
+
+    let settingsDisposable = vscode.commands.registerCommand('extension.editSettings', function () {
+        const panel = vscode.window.createWebviewPanel(
+            'settingsEditor', // Identifies the type of the webview
+            'Settings Editor', // Title of the panel displayed to the user
+            vscode.ViewColumn.One, // Editor column to show the new webview panel in.
+            { enableScripts: true }
+        );
+
+        panel.webview.html = getSettingsViewContent(regexConfigs);
+        panel.webview.onDidReceiveMessage(
+            message => {
+                switch (message.command) {
+                    case 'save':
+                        console.log('Save clicked.');
+                        saveSettings(message.data);
+                        return;
+                    case 'cancel':
+                        console.log('Cancel clicked.');
+                        panel.dispose();
+                        return;
+                }
+            },
+            undefined,
+            context.subscriptions
+        );
+    });
+
+    context.subscriptions.push(settingsDisposable);
+
+    context.subscriptions.push(
+        vscode.workspace.onDidChangeConfiguration(event => {
+            if (event.affectsConfiguration('extension.patternSettings')) {
+                console.log('Pattern settings changed.');
+                // Reload regex configurations from settings
+                regexConfigs = getPatternSettings();
+            }
+        })
+    );
+
     context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(editor => {
         if (editor) {
             updateWebViewContent(editor);
@@ -43,6 +89,60 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(disposableWebview);
 }
 
+function getSettingsViewContent(regexConfigs: RegexConfig[]): string {
+    let htmlTemplate = fs.readFileSync(settingsHtmlPath, 'utf8');
+    return htmlTemplate.replace('{{content}}', getSettingsTable(regexConfigs));
+}
+
+function getSettingsTable(regexConfigs: RegexConfig[]): string {
+    let jsonBlocks = regexConfigs.map((config, index) => {
+        return `<tr class="json-block">
+    <td>{
+        <table>
+            <tr><td >"name": </td><td class="wide"><textarea class="name">${config.name}</textarea></td></tr>
+            <tr><td >"regex": </td><td class="wide"><textarea class="regex">${config.regex}</textarea></td></tr>
+            <tr><td >"renderType": </td><td class="wide">
+                <select class="renderType">
+                    <option value="first" ${config.renderType === 'first' ? 'selected' : ''}>First</option>
+                    <option value="last" ${config.renderType === 'last' ? 'selected' : ''}>Last</option>
+                    <option value="all" ${config.renderType === 'all' ? 'selected' : ''}>All</option>
+                </select></td></tr>
+            <tr><td >"outputFormat": </td><td class="wide"><input type="text" value="${config.outputFormat}" class="outputFormat" /></td></tr>
+        </table>
+    }</td>
+    <td>
+        <button class="delete">Delete</button>
+    </td>
+</tr>`;
+    });
+    return `${jsonBlocks.join('')}`;
+}
+
+
+
+function saveSettings(data: RegexConfig[]) {
+    const config = vscode.workspace.getConfiguration('qe-preview');
+
+    // Optionally validate data here
+    for (const item of data) {
+        if (!item.name || !item.regex || !item.renderType || !item.outputFormat) {
+            console.error('Invalid data:', item);
+            vscode.window.showErrorMessage('One or more entries are invalid.');
+            return; // Exit if any data is invalid
+        }
+    }
+
+    // Update the configuration
+    config.update('patternSettings', data, vscode.ConfigurationTarget.Global)
+        .then(
+            () => vscode.window.showInformationMessage('Settings saved successfully.'),
+            error => {
+                console.error('Failed to save settings:', error);
+                vscode.window.showErrorMessage('Failed to save settings.');
+            }
+        );
+}
+
 function openPreview(context: vscode.ExtensionContext, editor: vscode.TextEditor) {
     if (!currentPanel) {
         currentPanel = vscode.window.createWebviewPanel(
@@ -62,6 +162,7 @@ function openPreview(context: vscode.ExtensionContext, editor: vscode.TextEditor
 }
 
 async function updateWebViewContent(editor: vscode.TextEditor) {
+    regexConfigs = getPatternSettings();
     if (currentPanel && editor) {
         const document = editor.document;
         if (document.languageId === "out") {
@@ -87,6 +188,12 @@ interface RegexConfig {
 function loadRegexConfigurations(): RegexConfig[] {
     const jsonData = fs.readFileSync(jsonPath, 'utf8');
     return JSON.parse(jsonData);
+}
+
+function getPatternSettings() {
+    const config = vscode.workspace.getConfiguration('qe-preview');
+    const patternSettings = config.get('patternSettings', []);
+    return patternSettings;
 }
 
 export function extractRelevantData(documentText: string): string {

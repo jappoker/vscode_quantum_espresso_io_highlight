@@ -11,7 +11,7 @@
     "type": "git",
     "url": "git@github.com:jappoker/vscode_quantum_espresso_io_highlight.git"
   },
-  "version": "0.0.1",
+  "version": "0.0.3",
   "engines": {
     "vscode": "^1.88.0"
   },
@@ -20,7 +20,8 @@
   ],
   "activationEvents": [
     "onLanguage:out",
-    "onCommand:extension.openLivePreview"
+    "onCommand:extension.openLivePreview",
+    "onCommand:extension.editSettings"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -32,6 +33,10 @@
       {
         "command": "extension.openLivePreview",
         "title": "QE: Open Live Preview"
+      },
+      {
+        "command": "extension.editSettings",
+        "title": "QE: Edit Pattern Settings for QE Live Preview"
       }
     ],
     "languages": [
@@ -41,7 +46,69 @@
           ".out"
         ]
       }
-    ]
+    ],
+    "configuration": {
+      "title": "Settings",
+      "properties": {
+        "qe-preview.patternSettings": {
+          "type": "array",
+          "default": [
+            {
+              "name": "Job Done?",
+              "regex": "(JOB DONE\\.)",
+              "renderType": "last",
+              "outputFormat": "{value}"
+            },
+            {
+              "name": "Unit Cell Volume",
+              "regex": "\\bunit-cell volume\\s+=\\s+([\\d.]+)\\s*\\(a\\.u\\.\\)\\^3",
+              "renderType": "last",
+              "outputFormat": "{value} (a.u.)^3"
+            },
+            {
+              "name": "Total Energy",
+              "regex": "!\\s*total\\s+energy\\s+=\\s+(-?\\d+\\.\\d+)\\s+Ry",
+              "renderType": "all",
+              "outputFormat": "{value} Ry"
+            },
+            {
+              "name": "Total Stress",
+              "regex": "\\s*total\\s+stress\\s+\\(Ry\\/bohr\\*\\*3\\)\\s+\\(kbar\\)\\s+P=\\s+(-?\\d+\\.\\d+)\\s*",
+              "renderType": "last",
+              "outputFormat": "{value} kbar"
+            }
+          ],
+          "description": "Configure regex patterns for processing files.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Name of the pattern."
+              },
+              "regex": {
+                "type": "string",
+                "description": "The regex pattern to apply."
+              },
+              "renderType": {
+                "type": "string",
+                "description": "Type of rendering."
+              },
+              "outputFormat": {
+                "type": "string",
+                "description": "Format to use for output."
+              }
+            },
+            "required": [
+              "name",
+              "regex",
+              "renderType",
+              "outputFormat"
+            ]
+          }
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
