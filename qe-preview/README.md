@@ -10,7 +10,7 @@ This extension offers a live preview for Quantum Espresso output files with the 
 
 1. Open **Visual Studio Code**.
 2. Navigate to the **Extensions** view by clicking on the square icon on the sidebar or pressing `Ctrl+Shift+X`.
-3. Search for `QE Live Preview` in the search bar.
+3. Search for `QE Live Preview` in the search bar, (also check [MarketplaceQE Live Preview - Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=zjy.qe-preview)).
 4. Click **Install**.
 
 
